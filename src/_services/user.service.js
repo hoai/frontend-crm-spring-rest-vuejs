@@ -12,13 +12,29 @@ export const userService = {
 };
 
 function login(username, password) {
+    var formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    formData.append('grant_type', 'password');
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        headers: {
+            //'Content-Type': 'application/json' ,
+
+           // 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+            'Authorization': 'Basic c3ByaW5nLXNlY3VyaXR5LW9hdXRoMi1yZWFkLXdyaXRlLWNsaWVudDpzcHJpbmctc2VjdXJpdHktb2F1dGgyLXJlYWQtd3JpdGUtY2xpZW50LXBhc3N3b3JkMTIzNA==',
+
+        },
+        // body: JSON.stringify({ username, password ,
+        //     'grant_type': 'password',
+        //
+        //
+        // })
+        body: formData
+
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/oauth/token`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // login successful if there's a jwt token in the response
