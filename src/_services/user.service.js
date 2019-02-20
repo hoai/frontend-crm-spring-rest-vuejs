@@ -19,17 +19,8 @@ function login(username, password) {
     const requestOptions = {
         method: 'POST',
         headers: {
-            //'Content-Type': 'application/json' ,
-
-           // 'Content-type': 'application/x-www-form-urlencoded; charset=utf-8',
             'Authorization': 'Basic c3ByaW5nLXNlY3VyaXR5LW9hdXRoMi1yZWFkLXdyaXRlLWNsaWVudDpzcHJpbmctc2VjdXJpdHktb2F1dGgyLXJlYWQtd3JpdGUtY2xpZW50LXBhc3N3b3JkMTIzNA==',
-
         },
-        // body: JSON.stringify({ username, password ,
-        //     'grant_type': 'password',
-        //
-        //
-        // })
         body: formData
 
     };
@@ -38,7 +29,7 @@ function login(username, password) {
         .then(handleResponse)
         .then(user => {
             // login successful if there's a jwt token in the response
-            if (user.token) {
+            if (user.access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
             }
