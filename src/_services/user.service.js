@@ -11,7 +11,7 @@ export const userService = {
     delete: _delete
 };
 
-function login(username, password) {
+async function login(username, password) {
     var formData = new FormData();
     formData.append('username', username);
     formData.append('password', password);
@@ -25,22 +25,24 @@ function login(username, password) {
 
     };
 
-    return fetch(`${config.apiUrl}/oauth/token`, requestOptions)
+    const token =  await fetch(`${config.apiUrl}/oauth/token`, requestOptions)
         .then(handleResponse)
         .then(data => {
             // login successful if there's a jwt token in the response
             if (data.access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('token', JSON.stringify(data));
-
-                let user = get_user_info(data.access_token);
+                resolve(data);
             }
 
-            return data;
         });
+    console.log('token', token);
+    const user =  await get_user_info(token.access_token);
+    console.log('user', user);
+    return user;
 }
 
-function logout() {
+async function logout() {
     // remove user from local storage to log user out
     let token = JSON.parse(localStorage.getItem('token'));
     if(token.access_token){
@@ -53,14 +55,14 @@ function logout() {
             body: formData
         };
 
-        fetch(`${config.apiUrl}/oauth/revoke-token`, requestOptions)
+        await fetch(`${config.apiUrl}/oauth/revoke-token`, requestOptions)
             .then(handleResponse);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     }
     return true;
 }
-function get_user_info(access_token) {
+async function get_user_info(access_token) {
     var formData = new FormData();
     formData.append('token', access_token);
     const requestOptions = {
@@ -78,8 +80,7 @@ function get_user_info(access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(data));
             }
-
-            return data;
+            resolve(data);
         });
 }
 function register(user) {
