@@ -49,10 +49,10 @@ async function logout() {
         var formData = new FormData();
         formData.append('token', token.access_token);
         const requestOptions = {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'Authorization': 'Basic '+ token.access_token,},
-            body: formData
+                'Authorization': 'Bearer '+ token.access_token,},
+            //body: formData
         };
 
         await fetch(`${config.apiUrl}/oauth/revoke-token`, requestOptions)
