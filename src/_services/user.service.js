@@ -27,14 +27,16 @@ function login(username, password) {
 
     return fetch(`${config.apiUrl}/oauth/token`, requestOptions)
         .then(handleResponse)
-        .then(user => {
+        .then(data => {
             // login successful if there's a jwt token in the response
-            if (user.access_token) {
+            if (data.access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('token', JSON.stringify(data));
+
+                let user = get_user_info(data.access_token);
             }
 
-            return user;
+            return data;
         });
 }
 
@@ -42,7 +44,28 @@ function logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
+function get_user_info(access_token) {
+    var formData = new FormData();
+    formData.append('token', access_token);
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Basic c3ByaW5nLXNlY3VyaXR5LW9hdXRoMi1yZWFkLXdyaXRlLWNsaWVudDpzcHJpbmctc2VjdXJpdHktb2F1dGgyLXJlYWQtd3JpdGUtY2xpZW50LXBhc3N3b3JkMTIzNA==',},
+        body: formData
+    };
 
+    return fetch(`${config.apiUrl}/oauth/check_token`, requestOptions)
+        .then(handleResponse)
+        .then(data => {
+            // login successful if there's a jwt token in the response
+            if (data.user_name) {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                localStorage.setItem('user', JSON.stringify(data));
+            }
+
+            return data;
+        });
+}
 function register(user) {
     const requestOptions = {
         method: 'POST',
