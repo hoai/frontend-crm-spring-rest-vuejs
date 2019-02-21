@@ -42,7 +42,23 @@ function login(username, password) {
 
 function logout() {
     // remove user from local storage to log user out
-    localStorage.removeItem('user');
+    let token = JSON.parse(localStorage.getItem('token'));
+    if(token.access_token){
+        var formData = new FormData();
+        formData.append('token', token.access_token);
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Basic '+ token,},
+            body: formData
+        };
+
+        fetch(`${config.apiUrl}/oauth/revoke-token`, requestOptions)
+            .then(handleResponse);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+    }
+    return true;
 }
 function get_user_info(access_token) {
     var formData = new FormData();
