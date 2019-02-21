@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
+import "regenerator-runtime/runtime";
 
 import { store } from './_store';
 import { router } from './_helpers';
