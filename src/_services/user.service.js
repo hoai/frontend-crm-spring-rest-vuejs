@@ -32,7 +32,7 @@ async function login(username, password) {
             if (data.access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('token', JSON.stringify(data));
-                resolve(data);
+                return data;
             }
 
         });
@@ -51,7 +51,7 @@ async function logout() {
         const requestOptions = {
             method: 'POST',
             headers: {
-                'Authorization': 'Basic '+ token,},
+                'Authorization': 'Basic '+ token.access_token,},
             body: formData
         };
 
@@ -80,7 +80,7 @@ async function get_user_info(access_token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(data));
             }
-            resolve(data);
+            return data;
         });
 }
 function register(user) {
